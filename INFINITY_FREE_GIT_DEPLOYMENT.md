@@ -97,60 +97,22 @@
 2. Click **phpMyAdmin**
 3. Select your database (left sidebar)
 4. Click **SQL** tab
-5. Paste this code:
+5. Open the file `DATABASE_SCHEMA.sql` from your project
+6. Copy **ALL** the SQL code
+7. Paste into phpMyAdmin SQL tab
+8. Click **Go**
+9. All tables created! ✅
 
-```sql
--- Users table
-CREATE TABLE users (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  fullname VARCHAR(255),
-  role VARCHAR(50),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Students table
-CREATE TABLE students (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  fullname VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Staff table
-CREATE TABLE staff (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  email VARCHAR(255) UNIQUE NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  fullname VARCHAR(255),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Scholarships table
-CREATE TABLE scholarships (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  amount DECIMAL(10, 2),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Applications table
-CREATE TABLE applications (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  student_id INT,
-  scholarship_id INT,
-  status VARCHAR(50),
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (student_id) REFERENCES students(id),
-  FOREIGN KEY (scholarship_id) REFERENCES scholarships(id)
-);
-```
-
-6. Click **Go**
-7. Tables created! ✅
+**Note**: The complete schema includes:
+- ✅ Users table (admin/staff)
+- ✅ Students table
+- ✅ Staff table
+- ✅ Scholarships table
+- ✅ Applications table
+- ✅ Documents table (for file uploads)
+- ✅ Notifications table
+- ✅ Logs table (for system logging)
+- ✅ Test data (sample admin, staff, student, scholarship)
 
 ---
 
