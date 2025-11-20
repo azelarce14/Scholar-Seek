@@ -1,0 +1,41 @@
+# Database credentials
+db_connect.php
+config/database.php
+
+# Sensitive files
+.env
+.env.local
+config/secrets.php
+
+# Logs
+logs/*.log
+*.log
+
+# Uploads (optional - remove if you want to include)
+uploads/applications/
+uploads/profile_pictures/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+.directory
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# Node modules (if using)
+node_modules/
+package-lock.json
+
+# Cache
+.cache/
+*.cache
