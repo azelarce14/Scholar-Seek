@@ -1,0 +1,504 @@
+/**
+ * First Time User Experience (FTUE) Onboarding Styles
+ */
+
+:root {
+    --ftue-primary: #0f172a;
+    --ftue-secondary: #667eea;
+    --ftue-accent: #764ba2;
+    --ftue-success: #10b981;
+    --ftue-white: #ffffff;
+    --ftue-overlay: rgba(0, 0, 0, 0.7);
+    --ftue-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+/* Overlay */
+.ftue-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--ftue-overlay);
+    z-index: 9998;
+    display: none;
+    transition: clip-path 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    clip-path: none;
+}
+
+.ftue-overlay.active {
+    display: block;
+    pointer-events: auto;
+}
+
+/* Highlight glow effect */
+.ftue-overlay::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Tooltip */
+.ftue-tooltip {
+    position: fixed;
+    background: var(--ftue-white);
+    border-radius: 16px;
+    box-shadow: var(--ftue-shadow);
+    z-index: 10000;
+    max-width: 380px;
+    animation: ftueTooltipIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: auto;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+@keyframes ftueTooltipIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes ftuePulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.7), inset 0 0 0 2px rgba(102, 126, 234, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(102, 126, 234, 0), inset 0 0 0 2px rgba(102, 126, 234, 0.3);
+    }
+}
+
+.ftue-tooltip-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ftue-tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.ftue-tooltip-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ftue-primary);
+    line-height: 1.4;
+}
+
+.ftue-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.ftue-close-btn:hover {
+    color: var(--ftue-primary);
+    transform: rotate(90deg);
+}
+
+.ftue-tooltip-description {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* Progress Bar */
+.ftue-progress {
+    width: 100%;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ftue-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--ftue-secondary), var(--ftue-accent));
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ftue-tooltip-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ftue-step-counter {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Buttons */
+.ftue-tooltip-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.ftue-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1;
+}
+
+.ftue-btn-primary {
+    background: linear-gradient(135deg, var(--ftue-secondary), var(--ftue-accent));
+    color: var(--ftue-white);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.ftue-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.ftue-btn-primary:active {
+    transform: translateY(0);
+}
+
+.ftue-btn-secondary {
+    background: #f3f4f6;
+    color: var(--ftue-primary);
+    border: 1px solid #e5e7eb;
+}
+
+.ftue-btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+}
+
+.ftue-btn-secondary:active {
+    transform: translateY(0);
+}
+
+/* Completion Message */
+.ftue-completion-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.ftue-completion-message.show {
+    opacity: 1;
+}
+
+.ftue-completion-content {
+    background: var(--ftue-white);
+    border-radius: 20px;
+    padding: 48px 32px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: var(--ftue-shadow);
+    animation: ftueCompletionIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ftueCompletionIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.ftue-completion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    animation: ftueIconBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes ftueIconBounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.ftue-completion-content h2 {
+    margin: 0 0 12px 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ftue-primary);
+}
+
+.ftue-completion-content p {
+    margin: 0 0 24px 0;
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .ftue-tooltip {
+        max-width: 90vw;
+        margin: 0 5vw;
+    }
+
+    .ftue-tooltip-content {
+        padding: 20px;
+        gap: 12px;
+    }
+
+    .ftue-tooltip-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .ftue-tooltip-description {
+        font-size: 0.9rem;
+    }
+
+    .ftue-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+
+    .ftue-completion-content {
+        padding: 32px 24px;
+        margin: 20px;
+    }
+
+    .ftue-completion-icon {
+        font-size: 3rem;
+    }
+
+    .ftue-completion-content h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ftue-tooltip {
+        max-width: 95vw;
+        margin: 0 2.5vw;
+    }
+
+    .ftue-tooltip-content {
+        padding: 16px;
+        gap: 10px;
+    }
+
+    .ftue-tooltip-header h3 {
+        font-size: 1rem;
+    }
+
+    .ftue-tooltip-description {
+        font-size: 0.85rem;
+    }
+
+    .ftue-btn {
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .ftue-tooltip-actions {
+        flex-direction: column;
+    }
+
+    .ftue-completion-content {
+        padding: 24px 16px;
+        margin: 16px;
+    }
+
+    .ftue-completion-icon {
+        font-size: 2.5rem;
+    }
+
+    .ftue-completion-content h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Accessibility */
+.ftue-btn:focus {
+    outline: 2px solid var(--ftue-secondary);
+    outline-offset: 2px;
+}
+
+.ftue-close-btn:focus {
+    outline: 2px solid var(--ftue-secondary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ftue-overlay: rgba(0, 0, 0, 0.85);
+    }
+
+    .ftue-tooltip {
+        background: #1f2937;
+    }
+
+    .ftue-tooltip-header h3 {
+        color: var(--ftue-white);
+    }
+
+    .ftue-tooltip-description {
+        color: #d1d5db;
+    }
+
+    .ftue-close-btn {
+        color: #6b7280;
+    }
+
+    .ftue-close-btn:hover {
+        color: var(--ftue-white);
+    }
+
+    .ftue-progress {
+        background: #374151;
+    }
+
+    .ftue-step-counter {
+        color: #9ca3af;
+    }
+
+    .ftue-btn-secondary {
+        background: #374151;
+        color: var(--ftue-white);
+        border-color: #4b5563;
+    }
+
+    .ftue-btn-secondary:hover {
+        background: #4b5563;
+    }
+
+    .ftue-completion-content {
+        background: #1f2937;
+    }
+
+    .ftue-completion-content h2 {
+        color: var(--ftue-white);
+    }
+
+    .ftue-completion-content p {
+        color: #d1d5db;
+    }
+}
+
+/* Sidebar Item Highlight */
+.sidebar-item {
+    transition: all 0.3s ease;
+}
+
+.sidebar-item[style*="animation: ftuePulse"] {
+    background: rgba(102, 126, 234, 0.15) !important;
+    border-left: 4px solid var(--ftue-secondary) !important;
+    padding-left: calc(1rem - 4px) !important;
+}
+
+/* Help Button */
+.ftue-help-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ftue-secondary), var(--ftue-accent));
+    color: var(--ftue-white);
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.ftue-help-button:hover {
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.ftue-help-button:active {
+    transform: translateY(-1px) scale(1.05);
+}
+
+.ftue-help-button i {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Responsive Help Button */
+@media (max-width: 768px) {
+    .ftue-help-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+        top: 15px;
+        right: 15px;
+    }
+
+    .ftue-help-button i {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .ftue-help-button {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        top: 10px;
+        right: 10px;
+    }
+
+    .ftue-help-button i {
+        font-size: 1.1rem;
+    }
+}

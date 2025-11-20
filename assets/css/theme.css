@@ -1,0 +1,403 @@
+/**
+ * Global Theme System - Light and Dark Mode
+ */
+
+:root {
+    /* Light Mode Colors */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --border-color: #e5e7eb;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Primary Colors */
+    --primary-color: #0f172a;
+    --primary-dark: #0d1420;
+    --secondary-color: #764ba2;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #3b82f6;
+}
+
+/* Dark Mode */
+html[data-theme="dark"],
+body.theme-dark {
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #16213e;
+    --bg-tertiary: #0f3460;
+    --text-primary: #f3f4f6;
+    --text-secondary: #d1d5db;
+    --text-tertiary: #9ca3af;
+    --border-color: #374151;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Global Styles */
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Sidebar */
+.sidebar {
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border-color);
+    box-shadow: 0 0 20px var(--shadow-color);
+}
+
+.sidebar-logo {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-nav {
+    background: var(--bg-primary);
+}
+
+.sidebar-item {
+    color: var(--text-secondary);
+}
+
+.sidebar-item:hover {
+    background-color: var(--bg-secondary);
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+}
+
+.sidebar-item.active {
+    background-color: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+    border-left-color: var(--primary-color);
+}
+
+.sidebar-footer {
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-primary);
+}
+
+.sidebar-user-info {
+    background: var(--bg-secondary);
+    border-radius: 6px;
+}
+
+.user-name {
+    color: var(--text-primary);
+}
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+[data-toggle-theme] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+[data-toggle-theme]:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+[data-toggle-theme] i {
+    font-size: 0.95rem;
+}
+
+/* Logout Button */
+.logout-btn,
+.logout-btn-sidebar {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover,
+.logout-btn-sidebar:hover {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.logout-btn-sidebar {
+    border-radius: 9999px;
+    padding: 0.6rem 0.85rem;
+}
+
+.logout-btn-sidebar i {
+    transition: transform 0.2s ease;
+}
+
+.logout-btn-sidebar:hover i {
+    transform: translateX(-2px);
+}
+
+/* Cards and Containers */
+.stat-card,
+.scholarship-card,
+.application-card,
+.profile-overview-card,
+.profile-tabs {
+    background: var(--bg-primary);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+.stat-card:hover,
+.scholarship-card:hover {
+    box-shadow: 0 8px 16px var(--shadow-color);
+}
+
+/* Forms */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"],
+input[type="password"],
+select,
+textarea {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="date"]:focus,
+input[type="number"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+input[readonly],
+select[disabled] {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+}
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+/* Tabs */
+.tab-buttons {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-btn {
+    color: var(--text-secondary);
+}
+
+.tab-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    background: var(--bg-primary);
+    color: var(--primary-color);
+}
+
+/* Modals */
+.modal {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.modal-header {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Sections */
+.section-header {
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.section-content {
+    background: var(--bg-primary);
+}
+
+.dashboard-section {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Alerts */
+.alert {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.alert-success {
+    border-color: rgba(16, 185, 129, 0.4);
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+}
+
+.alert-error {
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--danger-color);
+}
+
+/* Search Box */
+.search-box {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.search-box input {
+    background: var(--bg-secondary);
+    border: none;
+    color: var(--text-primary);
+}
+
+.search-box input::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Badges */
+.badge {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.badge-primary {
+    background: rgba(102, 126, 234, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--success-color);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* Tables */
+table {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+thead {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr:hover {
+    background: var(--bg-secondary);
+}
+
+/* Links */
+a {
+    color: var(--primary-color);
+}
+
+a:hover {
+    color: var(--primary-dark);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Placeholder */
+::placeholder {
+    color: var(--text-tertiary);
+}
+
+/* Selection */
+::selection {
+    background: var(--primary-color);
+    color: white;
+}

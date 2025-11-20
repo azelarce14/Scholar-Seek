@@ -1,0 +1,449 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8fafc;
+    color: #1a202c;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Main container */
+.register-container {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 8px 40px rgba(10, 6, 211, 0.12);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Logo section */
+.logo {
+    background: transparent;
+    padding: 20px 0 10px 0;
+    text-align: center;
+    border-bottom: none;
+}
+
+.logo img {
+    height: 70px;
+    width: auto;
+    filter: none;
+}
+
+/* Form styling */
+.register-form {
+    padding: 40px;
+}
+
+.register-form h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0A06D3;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 10px;
+    position: relative;
+    font-family: 'Poppins', sans-serif;
+}
+
+.register-form h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: #FCEB10;
+    border-radius: 2px;
+}
+
+/* Form sections */
+.form-section {
+    margin-bottom: 40px;
+    padding: 30px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-section:hover {
+    border-color: #0A06D3;
+    box-shadow: 0 4px 20px rgba(10, 6, 211, 0.1);
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #0A06D3;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.section-title::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: #FCEB10;
+    border-radius: 2px;
+}
+
+/* Form grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.input-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Input groups - FIXED ICON PLACEMENT */
+.input-group {
+    position: relative;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 14px 16px 14px 48px; /* Increased left padding for icons */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 400;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+    outline: none;
+    appearance: none;
+    font-family: 'Poppins', sans-serif;
+    height: 52px; /* Fixed height for consistency */
+}
+
+.input-group input::placeholder {
+    color: #9ca3af;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #0A06D3;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(10, 6, 211, 0.1);
+    transform: translateY(-2px);
+}
+
+/* FIXED ICON POSITIONING */
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    color: #6b7280;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 2; /* Ensure icons are above inputs */
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Specific positioning for different input states */
+.input-group:focus-within .input-icon {
+    color: #0A06D3;
+}
+
+/* Fix for select dropdown icon overlap */
+.input-group select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 16px center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 48px; /* Increased right padding for dropdown arrow */
+}
+
+/* Select specific styling when focused */
+.input-group select:focus {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%230A06D3' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+/* Form actions */
+.form-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.submit-btn {
+    background: #0A06D3;
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(10, 6, 211, 0.3);
+    font-family: 'Poppins', sans-serif;
+}
+
+.submit-btn:hover {
+    background: #0805a8;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(10, 6, 211, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.login-link {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #0A06D3;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.login-link a:hover {
+    color: #0805a8;
+    text-decoration: underline;
+}
+
+/* Alert styles */
+.alert {
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    animation: slideDown 0.3s ease;
+    border: 2px solid;
+}
+
+.alert-error {
+    background: #fef2f2;
+    color: #991b1b;
+    border-color: #fecaca;
+}
+
+.alert-success {
+    background: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding: 16px;
+    }
+    
+    .register-container {
+        border-radius: 16px;
+    }
+    
+    .register-form {
+        padding: 24px;
+    }
+    
+    .register-form h2 {
+        font-size: 22px;
+        margin-bottom: 32px;
+    }
+    
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .form-section {
+        padding: 24px;
+        margin-bottom: 32px;
+    }
+    
+    .logo {
+        padding: 20px 0 5px 0;
+    }
+    
+    .logo img {
+        height: 60px;
+    }
+    
+    /* Mobile input adjustments */
+    .input-group input,
+    .input-group select {
+        height: 50px;
+        padding: 14px 16px 14px 44px;
+    }
+    
+    .input-icon {
+        left: 14px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .register-form {
+        padding: 20px;
+    }
+    
+    .register-form h2 {
+        font-size: 20px;
+    }
+    
+    .form-section {
+        padding: 20px;
+    }
+    
+    .section-title {
+        font-size: 18px;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    /* Mobile small screen adjustments */
+    .input-group input,
+    .input-group select {
+        height: 48px;
+        padding: 12px 14px 12px 42px;
+        font-size: 14px;
+    }
+    
+    .input-icon {
+        left: 12px;
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Focus indicators for accessibility */
+.input-group input:focus-visible,
+.input-group select:focus-visible,
+.submit-btn:focus-visible {
+    outline: 2px solid #0A06D3;
+    outline-offset: 2px;
+}
+
+/* Loading state */
+.submit-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.submit-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Success animation */
+@keyframes successPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(10, 6, 211, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(10, 6, 211, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(10, 6, 211, 0);
+    }
+}
+
+.submit-btn.success {
+    animation: successPulse 1s;
+}
+
+/* Custom scrollbar for dropdowns */
+select::-webkit-scrollbar {
+    width: 8px;
+}
+
+select::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+select::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+/* Additional fixes for specific icon alignment */
+.input-group.password-group .input-icon,
+.input-group.email-group .input-icon,
+.input-group.text-group .input-icon {
+    top: 50%;
+}
+
+/* Ensure consistent vertical alignment */
+.input-group input:not([type="password"]),
+.input-group select {
+    line-height: 1.5;
+}

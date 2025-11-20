@@ -1,0 +1,33 @@
+# Prevent direct access to uploaded files
+# Only allow access through PHP scripts
+
+# Deny all direct access
+Order Deny,Allow
+Deny from all
+
+# Allow only PDF files to be served
+<FilesMatch "\.(pdf)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Prevent execution of PHP files in uploads directory
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order Deny,Allow
+    Deny from all
+</FilesMatch>
+
+# Set proper MIME type for PDF files
+<IfModule mod_mime.c>
+    AddType application/pdf .pdf
+</IfModule>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options nosniff
+    Header set X-Frame-Options DENY
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>

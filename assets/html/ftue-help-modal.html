@@ -1,0 +1,275 @@
+<!-- FTUE Help Modal - Can be included in any page -->
+<div id="ftueHelpModal" class="ftue-help-modal" style="display: none;">
+    <div class="ftue-help-content">
+        <div class="ftue-help-header">
+            <h2>Need Help?</h2>
+            <button class="ftue-help-close" onclick="closeFTUEHelpModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="ftue-help-body">
+            <div class="ftue-help-section">
+                <h3><i class="fas fa-graduation-cap"></i> Getting Started</h3>
+                <p>Welcome to ScholarSeek! Here are some quick tips to help you get started:</p>
+                <ul>
+                    <li><strong>Complete Your Profile:</strong> Add all your information to improve your chances</li>
+                    <li><strong>Browse Scholarships:</strong> Explore available opportunities that match your profile</li>
+                    <li><strong>Apply Early:</strong> Submit applications as soon as possible</li>
+                    <li><strong>Track Progress:</strong> Monitor your application status in real-time</li>
+                </ul>
+            </div>
+
+            <div class="ftue-help-section">
+                <h3><i class="fas fa-question-circle"></i> Common Questions</h3>
+                <div class="faq-item">
+                    <h4>How do I apply for a scholarship?</h4>
+                    <p>Click on any scholarship card and select "Apply Now". Fill out the application form with your details and submit.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>Can I edit my application after submitting?</h4>
+                    <p>Applications cannot be edited after submission. Please review all information before submitting.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>How long does it take to review applications?</h4>
+                    <p>Review times vary by scholarship. Check the scholarship details for estimated review timelines.</p>
+                </div>
+                <div class="faq-item">
+                    <h4>What if I don't meet the requirements?</h4>
+                    <p>You can still apply! Some scholarships may have flexible requirements. Contact the scholarship provider for more information.</p>
+                </div>
+            </div>
+
+            <div class="ftue-help-section">
+                <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
+                <ul>
+                    <li>Set reminders for upcoming deadlines</li>
+                    <li>Apply to multiple scholarships to increase your chances</li>
+                    <li>Keep your profile updated with the latest information</li>
+                    <li>Check your notifications regularly for updates</li>
+                </ul>
+            </div>
+
+            <div class="ftue-help-actions">
+                <button class="ftue-help-btn ftue-help-btn-secondary" onclick="closeFTUEHelpModal()">
+                    Close
+                </button>
+                <button class="ftue-help-btn ftue-help-btn-primary" onclick="restartFTUETour()">
+                    <i class="fas fa-redo"></i> Restart Tour
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ftue-help-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+}
+
+.ftue-help-content {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: ftueHelpSlideIn 0.3s ease;
+}
+
+@keyframes ftueHelpSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ftue-help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 16px 16px 0 0;
+}
+
+.ftue-help-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.ftue-help-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ftue-help-close:hover {
+    opacity: 0.8;
+}
+
+.ftue-help-body {
+    padding: 24px;
+}
+
+.ftue-help-section {
+    margin-bottom: 24px;
+}
+
+.ftue-help-section h3 {
+    margin: 0 0 12px 0;
+    font-size: 1.1rem;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ftue-help-section p {
+    margin: 0 0 12px 0;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+.ftue-help-section ul {
+    margin: 0;
+    padding-left: 20px;
+    color: #6b7280;
+}
+
+.ftue-help-section li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.faq-item {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+}
+
+.faq-item h4 {
+    margin: 0 0 8px 0;
+    color: #0f172a;
+    font-size: 0.95rem;
+}
+
+.faq-item p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.ftue-help-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.ftue-help-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.ftue-help-btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.ftue-help-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.ftue-help-btn-secondary {
+    background: #f3f4f6;
+    color: #0f172a;
+    border: 1px solid #e5e7eb;
+}
+
+.ftue-help-btn-secondary:hover {
+    background: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+    .ftue-help-content {
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+
+    .ftue-help-header {
+        padding: 16px;
+    }
+
+    .ftue-help-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .ftue-help-body {
+        padding: 16px;
+    }
+
+    .ftue-help-actions {
+        flex-direction: column;
+    }
+}
+</style>
+
+<script>
+function openFTUEHelpModal() {
+    document.getElementById('ftueHelpModal').style.display = 'flex';
+}
+
+function closeFTUEHelpModal() {
+    document.getElementById('ftueHelpModal').style.display = 'none';
+}
+
+function restartFTUETour() {
+    closeFTUEHelpModal();
+    FTUEOnboarding.restartTour();
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+    const modal = document.getElementById('ftueHelpModal');
+    if (event.target === modal) {
+        closeFTUEHelpModal();
+    }
+});
+</script>
