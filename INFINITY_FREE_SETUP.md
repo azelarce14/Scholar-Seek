@@ -17,8 +17,20 @@ After account creation, you'll receive:
 - Install on your computer
 - Open FileZilla
 
-## 4. Connect to Your Server
-In FileZilla:
+## 4. Deploy from GitHub (Recommended - Faster!)
+Since your files are already on GitHub, use this faster method:
+
+### Option A: Using Git (Fastest)
+1. Log in to Infinity Free control panel
+2. Go to **Advanced** → **Terminal** (if available)
+3. Run these commands:
+   ```bash
+   cd /home/u123456789/public_html
+   git clone https://github.com/azelarce14/Scholar-Seek.git .
+   ```
+4. Skip to Step 6
+
+### Option B: Using FileZilla (Traditional)
 1. Click **File** → **Site Manager**
 2. Click **New Site**
 3. Enter:
@@ -29,12 +41,12 @@ In FileZilla:
    - **Password**: your-password
 4. Click **Connect**
 
-## 5. Upload Your Files
+## 5. Upload Your Files from GitHub
 1. In FileZilla left panel (Local), navigate to: `c:\xampp\htdocs\scholarseek\`
 2. In FileZilla right panel (Remote), navigate to: `/htdocs/`
-3. Select all files and folders
+3. Select all files and folders (Ctrl+A)
 4. Right-click → **Upload**
-5. Wait for upload to complete
+5. Wait for upload to complete (should be faster since files are already compressed)
 
 ## 6. Set File Permissions
 1. In FileZilla right panel, right-click on **uploads** folder

@@ -10,12 +10,25 @@
 2. Go to **Account** → **FTP Accounts**
 3. Create a new FTP account or use the default one
 4. Note down:
-   - FTP Host
+   - FTP Host 
    - FTP Username
    - FTP Password
    - FTP Port (usually 21)
 
-## Step 2: Connect via FTP
+## Step 2: Deploy from GitHub (Recommended)
+Since your files are already on GitHub, you have two options:
+
+### Option A: Using Git (Fastest)
+1. Log in to Infinity Free control panel
+2. Go to **Advanced** → **Terminal** (if available)
+3. Navigate to your public folder and clone:
+   ```bash
+   cd /home/u123456789/public_html
+   git clone https://github.com/azelarce14/Scholar-Seek.git .
+   ```
+4. Skip to Step 4
+
+### Option B: Using FTP (Traditional)
 1. Open FileZilla
 2. Go to **File** → **Site Manager**
 3. Click **New Site**
@@ -27,7 +40,7 @@
    - Password: Your FTP Password
 5. Click **Connect**
 
-## Step 3: Upload ScholarSeek Files
+## Step 3: Upload ScholarSeek Files via FTP
 1. In FileZilla, navigate to the remote folder: `/htdocs/` or `/public_html/`
 2. Upload all files from your local ScholarSeek folder to the remote server
 3. Ensure the following directories are created:
