@@ -1,0 +1,14 @@
+# Deny direct access to logs folder
+<FilesMatch "\.log$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Prevent directory listing
+Options -Indexes
+
+# Prevent script execution
+<FilesMatch "\.(php|phtml|php3|php4|php5|phps)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>

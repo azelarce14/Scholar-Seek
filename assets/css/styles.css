@@ -974,6 +974,66 @@ footer {
 }
 
 /* ========================================
+   About Us Section
+   ======================================== */
+
+.about-us {
+    padding: 80px 0;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
+}
+
+.about-us h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 3rem;
+    text-align: center;
+    color: var(--primary-color);
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+
+.about-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.about-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--gray-700);
+}
+
+.about-text p:first-child {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.about-video {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.about-video:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+}
+
+.about-video iframe {
+    display: block;
+    width: 100%;
+    height: 450px;
+    border: none;
+}
+
+/* ========================================
    Responsive Design - Tablet
    ======================================== */
 
@@ -997,8 +1057,18 @@ footer {
     .portals h2,
     .partners h2,
     .faq h2,
-    .cta h2 {
+    .cta h2,
+    .about-us h2 {
         font-size: 2rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .about-video iframe {
+        height: 350px;
     }
 }
 
@@ -1041,8 +1111,22 @@ footer {
     .portals h2,
     .partners h2,
     .faq h2,
-    .cta h2 {
+    .cta h2,
+    .about-us h2 {
         font-size: 1.75rem;
+    }
+
+    .about-us {
+        padding: 40px 0;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .about-video iframe {
+        height: 250px;
     }
 
     .hero {
@@ -1226,4 +1310,19 @@ footer {
     .stats {
         padding: 40px 0;
     }
+
+    .about-us h2 {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .about-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .about-video iframe {
+        height: 250px;
+    }
 }
+

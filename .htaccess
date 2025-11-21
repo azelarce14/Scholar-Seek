@@ -14,7 +14,7 @@
     Header unset Expires
     
     # Add Content-Security-Policy header
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://cdnjs.cloudflare.com https://fonts.gstatic.com; connect-src 'self'; frame-ancestors 'none';"
+    Header set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtu.be; frame-ancestors 'none';"
     
     # Add Strict-Transport-Security (HSTS) for HTTPS
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
@@ -146,7 +146,14 @@ AddDefaultCharset utf-8
     Deny from all
 </FilesMatch>
 
-<FilesMatch "\.(env|json|lock|md)$">
+<FilesMatch "\.(env|lock|md)$">
     Order allow,deny
     Deny from all
+</FilesMatch>
+
+# Allow manifest.json for PWA
+<FilesMatch "^manifest\.json$">
+    Order allow,deny
+    Allow from all
+    Header set Content-Type "application/manifest+json; charset=utf-8"
 </FilesMatch>
