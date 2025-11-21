@@ -4,18 +4,18 @@
  */
 
 // Database configuration
-// InfinityFree Production Database
-$host = "sql100.infinityfree.com";     
-$user = "if0_40468565";          
-$pass = "mFSh9ALReEiE";              
-$db   = "if0_40468565_scholarseek_db";   
+// Local XAMPP Development Database
+$host = "127.0.0.1";     
+$user = "root";          
+$pass = "";              
+$db   = "scholarseek";   
 $port = 3306;
 
-// Uncomment below for local XAMPP development
-// $host = "127.0.0.1";     
-// $user = "root";          
-// $pass = "";              
-// $db   = "scholarseek";   
+// Uncomment below for InfinityFree Production Database
+// $host = "sql100.infinityfree.com";     
+// $user = "if0_40468565";          
+// $pass = "mFSh9ALReEiE";              
+// $db   = "if0_40468565_scholarseek_db";   
 // $port = 3306;
 
 // Create connection with error handling
