@@ -87,7 +87,7 @@
         $host = "sql100.infinityfree.com";
         $user = "if0_40468565";
         $pass = "mFSh9ALReEiE";
-        $db = "if0_40468565_XXX";
+        $db = "if0_40468565_scholarseek_db";
         $port = 3306;
 
         $conn = @mysqli_connect($host, $user, $pass, $db, $port);
