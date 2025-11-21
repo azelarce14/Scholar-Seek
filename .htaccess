@@ -14,7 +14,7 @@
     Header unset Expires
     
     # Add Content-Security-Policy header
-    Header set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtu.be; frame-ancestors 'none';"
+    Header set Content-Security-Policy "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:; style-src 'self' 'unsafe-inline' https: data:; img-src 'self' data: https:; font-src 'self' https: data:; connect-src 'self' https:; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtu.be; frame-ancestors 'none';"
     
     # Add Strict-Transport-Security (HSTS) for HTTPS
     Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
