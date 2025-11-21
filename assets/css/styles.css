@@ -83,6 +83,7 @@ body {
     text-decoration: none;
     cursor: pointer;
     transition: transform 0.3s ease;
+    margin-right: auto;
 }
 
 .nav-logo:hover {
@@ -92,6 +93,13 @@ body {
 .nav-logo i {
     color: var(--blue-color);
     font-size: 1.75rem;
+}
+
+.logo-img {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 5px;
 }
 
 .nav-menu {
