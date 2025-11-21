@@ -4,11 +4,19 @@
  */
 
 // Database configuration
-$host = "127.0.0.1";     
-$user = "root";          
-$pass = "";              
-$db   = "scholarseek";   
+// InfinityFree Production Database
+$host = "sql100.infinityfree.com";     
+$user = "if0_40468565";          
+$pass = "mFSh9ALReEiE";              
+$db   = "if0_40468565_XXX";   
 $port = 3306;
+
+// Uncomment below for local XAMPP development
+// $host = "127.0.0.1";     
+// $user = "root";          
+// $pass = "";              
+// $db   = "scholarseek";   
+// $port = 3306;
 
 // Create connection with error handling
 $conn = mysqli_connect($host, $user, $pass, $db, $port);
