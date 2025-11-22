@@ -1,0 +1,40 @@
+# ScholarSeek Robots.txt
+# Defines crawling rules for search engines
+
+User-agent: *
+Crawl-delay: 1
+
+# Allow all public pages
+Allow: /index.html
+Allow: /login.php
+Allow: /register.php
+Allow: /legal.php
+
+
+# Allow essential assets for rendering
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/img/
+
+# Disallow sensitive/admin pages
+Disallow: /admin_dashboard.php
+Disallow: /staff_dashboard.php
+Disallow: /student_dashboard.php
+Disallow: /apply_scholarship.php
+Disallow: /manage_*.php
+Disallow: /process_*.php
+Disallow: /update_*.php
+Disallow: /get_*.php
+Disallow: /logs/
+Disallow: /uploads/
+Disallow: /config/
+
+# Disallow other sensitive files
+Disallow: /db_connect.php
+Disallow: /email_system.php
+Disallow: /notification_*.php
+Disallow: /rejection_*.php
+Disallow: /view_document.php
+
+# Sitemap location
+Sitemap: https://scholarseek.infinityfreeapp.com/sitemap.xml

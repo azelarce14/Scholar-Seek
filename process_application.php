@@ -1,4 +1,9 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+set_time_limit(60); // Set 60 second timeout for this script
+
 session_start();
 include 'db_connect.php';
 
@@ -13,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: student_dashboard.php");
     exit();
 }
+
+// Note: Database schema is already properly configured
+// All required columns exist in the applications table
+// Removed auto-fix to improve performance and prevent timeouts
 
 $student_id = $_SESSION['user_id'];
 $scholarship_id = $_POST['scholarship_id'] ?? 0;
@@ -93,45 +102,51 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 // Handle file uploads
 $uploaded_files = [];
-if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
+$file_upload_errors = [];
+
+if (isset($_FILES['documents']) && is_array($_FILES['documents']['name'])) {
     $upload_dir = 'uploads/applications/' . $student_id . '_' . $scholarship_id . '/';
     
     // Create upload directory if it doesn't exist
     if (!file_exists($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+        @mkdir($upload_dir, 0755, true);
     }
     
     $document_types = $_POST['document_types'] ?? [];
     
     for ($i = 0; $i < count($_FILES['documents']['name']); $i++) {
+        // Skip empty file inputs
+        if (empty($_FILES['documents']['name'][$i])) {
+            continue;
+        }
+        
         if ($_FILES['documents']['error'][$i] === UPLOAD_ERR_OK) {
             $file_name = $_FILES['documents']['name'][$i];
             $file_tmp = $_FILES['documents']['tmp_name'][$i];
             $file_size = $_FILES['documents']['size'][$i];
             $file_type = $_FILES['documents']['type'][$i];
             
-            // Validate file type
-            if ($file_type !== 'application/pdf') {
-                $_SESSION['error_message'] = "All documents must be PDF files.";
-                header("Location: apply_scholarship.php?id=" . $scholarship_id);
-                exit();
+            // Validate file type (allow PDF and common document types)
+            $allowed_types = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!in_array($file_type, $allowed_types)) {
+                $file_upload_errors[] = "File '$file_name' must be a PDF or Word document.";
+                continue;
             }
             
             // Validate file size (5MB limit)
             if ($file_size > 5 * 1024 * 1024) {
-                $_SESSION['error_message'] = "File size must not exceed 5MB.";
-                header("Location: apply_scholarship.php?id=" . $scholarship_id);
-                exit();
+                $file_upload_errors[] = "File '$file_name' exceeds 5MB limit.";
+                continue;
             }
             
             // Generate unique filename
-            $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+            $file_extension = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
             $safe_filename = preg_replace('/[^a-zA-Z0-9_-]/', '_', pathinfo($file_name, PATHINFO_FILENAME));
             $unique_filename = $safe_filename . '_' . time() . '_' . $i . '.' . $file_extension;
             $file_path = $upload_dir . $unique_filename;
             
             // Move uploaded file
-            if (move_uploaded_file($file_tmp, $file_path)) {
+            if (@move_uploaded_file($file_tmp, $file_path)) {
                 $uploaded_files[] = [
                     'type' => $document_types[$i] ?? 'Unknown',
                     'filename' => $unique_filename,
@@ -139,11 +154,17 @@ if (isset($_FILES['documents']) && !empty($_FILES['documents']['name'][0])) {
                     'original_name' => $file_name
                 ];
             } else {
-                $_SESSION['error_message'] = "Failed to upload file: " . $file_name;
-                header("Location: apply_scholarship.php?id=" . $scholarship_id);
-                exit();
+                $file_upload_errors[] = "Failed to upload file: $file_name";
             }
+        } elseif ($_FILES['documents']['error'][$i] !== UPLOAD_ERR_NO_FILE) {
+            // Log upload errors (but don't fail if file is optional)
+            $file_upload_errors[] = "Upload error for file: " . $_FILES['documents']['name'][$i];
         }
+    }
+    
+    // If there are upload errors, log them but continue (files might be optional)
+    if (!empty($file_upload_errors)) {
+        error_log("File upload warnings: " . implode(", ", $file_upload_errors));
     }
 }
 
@@ -209,15 +230,18 @@ if (mysqli_stmt_execute($stmt)) {
         WHERE id = ?
     ";
     $update_stmt = mysqli_prepare($conn, $update_student);
-    mysqli_stmt_bind_param(
-        $update_stmt,
-        "dssi",
-        $gwa,
-        $address,
-        $date_of_birth,
-        $student_id
-    );
-    mysqli_stmt_execute($update_stmt);
+    if ($update_stmt) {
+        mysqli_stmt_bind_param(
+            $update_stmt,
+            "dssi",
+            $gwa,
+            $address,
+            $date_of_birth,
+            $student_id
+        );
+        mysqli_stmt_execute($update_stmt);
+        mysqli_stmt_close($update_stmt);
+    }
     
     $_SESSION['success_message'] = "Successfully applied for the scholarship!";
     header("Location: student_dashboard.php");
@@ -230,11 +254,39 @@ if (mysqli_stmt_execute($stmt)) {
         }
     }
     
-    $_SESSION['error_message'] = "Error submitting application. Please try again.";
+    $error_msg = mysqli_stmt_error($stmt);
+    $error_code = mysqli_stmt_errno($stmt);
+    
+    // Log detailed error information
+    error_log("=== APPLICATION SUBMISSION ERROR ===");
+    error_log("Error Code: " . $error_code);
+    error_log("Error Message: " . $error_msg);
+    error_log("Student ID: " . $student_id);
+    error_log("Scholarship ID: " . $scholarship_id);
+    error_log("Full Name: " . $full_name);
+    error_log("Email: " . $email);
+    error_log("Date of Birth: " . $date_of_birth);
+    error_log("Year Level: " . $year_level);
+    error_log("GWA: " . ($gwa ?? 'NULL'));
+    error_log("Enrollment Certificate: " . ($enrollment_certificate ?? 'NULL'));
+    error_log("Good Moral Document: " . ($good_moral_document ?? 'NULL'));
+    error_log("Report Card: " . ($report_card ?? 'NULL'));
+    error_log("Study Load Document: " . ($study_load_document ?? 'NULL'));
+    error_log("Other Documents: " . ($other_documents_json ?? 'NULL'));
+    error_log("===================================");
+    
+    // User-friendly error message
+    if (strpos($error_msg, 'Unknown column') !== false) {
+        $_SESSION['error_message'] = "Database configuration error. Please contact the administrator.";
+    } else if (strpos($error_msg, 'Duplicate entry') !== false) {
+        $_SESSION['error_message'] = "You have already applied for this scholarship.";
+    } else {
+        $_SESSION['error_message'] = "Error submitting application. Please try again or contact support.";
+    }
+    
     header("Location: apply_scholarship.php?id=" . $scholarship_id);
     exit();
 }
 
 mysqli_stmt_close($stmt);
-mysqli_close($conn);
 ?>

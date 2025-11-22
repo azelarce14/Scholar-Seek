@@ -7,23 +7,26 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || !in_array(
     exit();
 }
 
-// Create fresh database connection
-$host = "127.0.0.1";     
-$user = "root";          
-$pass = "";              
-$db   = "scholarseek";   
-$port = 3306;
+// Use centralized database connection
+require_once 'db_connect.php';
 
-$conn = new mysqli($host, $user, $pass, $db, $port);
-
-// Check connection
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("Database connection failed. Please check if XAMPP MySQL is running.");
+// Auto-fix: Add missing columns to scholarships table if they don't exist
+$check_columns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'scholarships' AND TABLE_SCHEMA = DATABASE()";
+$result = $conn->query($check_columns);
+$existing_columns = [];
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $existing_columns[] = $row['COLUMN_NAME'];
+    }
 }
 
-// Set charset
-$conn->set_charset("utf8mb4");
+// Add missing columns
+if (!in_array('min_gwa', $existing_columns)) {
+    $conn->query("ALTER TABLE scholarships ADD COLUMN min_gwa DECIMAL(3, 2) DEFAULT NULL");
+}
+if (!in_array('required_documents', $existing_columns)) {
+    $conn->query("ALTER TABLE scholarships ADD COLUMN required_documents LONGTEXT DEFAULT NULL");
+}
 
 // Handle delete
 if (isset($_GET['delete'])) {
@@ -61,15 +64,35 @@ if (isset($_GET['delete'])) {
 
 // Handle add/edit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $amount = $_POST['amount'];
-    $deadline = $_POST['deadline'];
+    // Validate and sanitize inputs
+    $title = isset($_POST['title']) ? trim($_POST['title']) : '';
+    $description = isset($_POST['description']) ? trim($_POST['description']) : '';
+    $deadline = isset($_POST['deadline']) ? trim($_POST['deadline']) : '';
+    
+    // Validate required fields
+    if (empty($title) || empty($description) || empty($deadline)) {
+        $_SESSION['notification'] = 'Please fill in all required fields.';
+        $_SESSION['notification_type'] = 'error';
+        header("Location: manage_scholarships.php");
+        exit();
+    }
+    
+    // Convert amount to float and remove any non-numeric characters
+    $amount_raw = isset($_POST['amount']) ? trim($_POST['amount']) : '0';
+    $amount = floatval(preg_replace('/[^0-9.]/', '', $amount_raw));
+    
+    if ($amount <= 0) {
+        $_SESSION['notification'] = 'Scholarship amount must be greater than 0.';
+        $_SESSION['notification_type'] = 'error';
+        header("Location: manage_scholarships.php");
+        exit();
+    }
+    
     $min_gwa = (!empty($_POST['min_gwa']) && trim($_POST['min_gwa']) !== '') ? trim($_POST['min_gwa']) : null;
     
     // Handle required documents
     $required_docs = [];
-    if (isset($_POST['required_documents'])) {
+    if (isset($_POST['required_documents']) && is_array($_POST['required_documents'])) {
         $required_docs = $_POST['required_documents'];
     }
     $required_documents = json_encode($required_docs);
@@ -91,11 +114,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $insert_query = "INSERT INTO scholarships (title, description, amount, deadline, min_gwa, required_documents, status) VALUES (?, ?, ?, ?, ?, ?, 'active')";
         $stmt = $conn->prepare($insert_query);
         if ($stmt) {
+            // Bind parameters with correct types: s=string, s=string, d=double, s=string, s=string (min_gwa), s=string (required_documents)
             $stmt->bind_param("ssdsss", $title, $description, $amount, $deadline, $min_gwa, $required_documents);
-            $stmt->execute();
+            if (!$stmt->execute()) {
+                $error_msg = $stmt->error;
+                error_log("Add scholarship error: " . $error_msg);
+                error_log("Scholarship data - Title: $title, Amount: $amount, Deadline: $deadline, Min GWA: $min_gwa, Docs: $required_documents");
+                $_SESSION['notification'] = 'Error creating scholarship: ' . htmlspecialchars($error_msg);
+                $_SESSION['notification_type'] = 'error';
+            } else {
+                $_SESSION['notification'] = 'Scholarship created successfully!';
+                $_SESSION['notification_type'] = 'success';
+            }
             $stmt->close();
-            $_SESSION['notification'] = 'Scholarship created successfully!';
-            $_SESSION['notification_type'] = 'success';
+        } else {
+            $error_msg = $conn->error;
+            error_log("Prepare error: " . $error_msg);
+            $_SESSION['notification'] = 'Database error: ' . htmlspecialchars($error_msg);
+            $_SESSION['notification_type'] = 'error';
         }
     }
     header("Location: manage_scholarships.php");
@@ -580,8 +616,13 @@ if (isset($_GET['edit'])) {
             }
         });
 
-        form.addEventListener('submit', function() {
-            form.querySelector('button[type="submit"]').disabled = true;
+        form.addEventListener('submit', function(e) {
+            // Allow form to submit normally
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Saving...';
+            }
             form.classList.add('loading');
         });
 

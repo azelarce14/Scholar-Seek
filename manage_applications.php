@@ -5,6 +5,12 @@ session_start();
 require_once 'db_connect.php';
 require_once 'notification_system.php';
 
+// Simple authentication check - admin or staff can manage applications
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || !in_array($_SESSION['user_type'], ['admin', 'staff'])) {
+    header('Location: login.php');
+    exit();
+}
+
 // Handle AJAX requests for application and notification details
 if (isset($_GET['action'])) {
     handleAjaxRequest();
@@ -347,20 +353,25 @@ function handleBulkUpdate() {
         
         // Log the bulk action (optional - only if activity_logs table exists)
         $user_id = $_SESSION['user_id'];
-        $user_type = $_SESSION['user_type'];
         $action_description = "Bulk {$status} {$updated_count} pending applications";
         
         // Check if activity_logs table exists before attempting to log
         $check_table = $conn->query("SHOW TABLES LIKE 'activity_logs'");
         if ($check_table && $check_table->num_rows > 0) {
-            $log_sql = "INSERT INTO activity_logs (user_id, user_type, action, description, created_at) VALUES (?, ?, ?, ?, NOW())";
-            $log_stmt = $conn->prepare($log_sql);
-            
-            if ($log_stmt) {
-                $action = 'bulk_update_applications';
-                $log_stmt->bind_param('isss', $user_id, $user_type, $action, $action_description);
-                $log_stmt->execute();
-                $log_stmt->close();
+            // Try to log, but don't fail if it errors
+            try {
+                $log_sql = "INSERT INTO activity_logs (user_id, action, details) VALUES (?, ?, ?)";
+                $log_stmt = $conn->prepare($log_sql);
+                
+                if ($log_stmt) {
+                    $action = 'bulk_update_applications';
+                    $log_stmt->bind_param('iss', $user_id, $action, $action_description);
+                    $log_stmt->execute();
+                    $log_stmt->close();
+                }
+            } catch (Exception $e) {
+                // Silently fail - don't break the application update
+                error_log("Activity log error: " . $e->getMessage());
             }
         }
         
@@ -384,12 +395,6 @@ function handleBulkUpdate() {
 }
 
 // Email system now integrated into db_connect.php
-
-// Simple authentication check - admin or staff can manage applications
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || !in_array($_SESSION['user_type'], ['admin', 'staff'])) {
-    header('Location: login.php');
-    exit();
-}
 
 // Handle individual rejection with reason
 if (isset($_POST['reject_application']) && isset($_POST['application_id']) && isset($_POST['rejection_reason'])) {
@@ -443,26 +448,34 @@ if (isset($_POST['reject_application']) && isset($_POST['application_id']) && is
             }
             
             if ($stmt->execute()) {
-                // Create notification with rejection reason
-                $notificationSystem = new NotificationSystem($conn);
-                $notificationSystem->notifyApplicationRejection(
-                    $app_data['student_id'], 
-                    $app_id, 
-                    $app_data['scholarship_title'], 
-                    $full_rejection_reason
-                );
+                $stmt->close();
                 
-                // Send email notification with rejection reason
-                sendNotificationEmail('application_rejection', [
-                    'email' => $app_data['email'],
-                    'name' => $app_data['fullname'],
-                    'scholarship_title' => $app_data['scholarship_title'],
-                    'rejection_reason' => $full_rejection_reason
-                ]);
+                try {
+                    // Create notification with rejection reason
+                    $notificationSystem = new NotificationSystem($conn);
+                    $notificationSystem->notifyApplicationRejection(
+                        $app_data['student_id'], 
+                        $app_id, 
+                        $app_data['scholarship_title'], 
+                        $full_rejection_reason
+                    );
+                    
+                    // Send email notification with rejection reason
+                    sendNotificationEmail('application_rejection', [
+                        'email' => $app_data['email'],
+                        'name' => $app_data['fullname'],
+                        'scholarship_title' => $app_data['scholarship_title'],
+                        'rejection_reason' => $full_rejection_reason
+                    ]);
+                } catch (Exception $e) {
+                    error_log("Rejection notification error: " . $e->getMessage());
+                }
                 
                 $_SESSION['success_message'] = "✅ Application rejected successfully! Student has been notified with detailed feedback.";
             } else {
                 $_SESSION['error_message'] = "❌ Failed to reject application. Please try again.";
+                error_log("Rejection update error: " . $stmt->error);
+                $stmt->close();
             }
         }
     } else {
@@ -551,26 +564,33 @@ if (isset($_POST['action']) && isset($_POST['application_id'])) {
     $update_sql = "UPDATE applications SET status = ?, reviewed_by = ?, review_date = NOW() WHERE id = ?";
     $stmt = $conn->prepare($update_sql);
     $stmt->bind_param("sii", $status, $reviewed_by, $application_id);
-    $stmt->execute();
+    if (!$stmt->execute()) {
+        error_log("Update error: " . $stmt->error);
+    }
+    $stmt->close();
     
     if ($app_data) {
-        // Create notification
-        $notificationSystem = new NotificationSystem($conn);
-        $notificationSystem->notifyApplicationStatus(
-            $app_data['student_id'], 
-            $application_id, 
-            $app_data['scholarship_title'], 
-            $status
-        );
-        
-        // Send email notification
-        sendNotificationEmail('application_status', [
-            'email' => $app_data['email'],
-            'name' => $app_data['fullname'],
-            'scholarship_title' => $app_data['scholarship_title'],
-            'status' => $status,
-            'application_id' => $application_id
-        ]);
+        try {
+            // Create notification
+            $notificationSystem = new NotificationSystem($conn);
+            $notificationSystem->notifyApplicationStatus(
+                $app_data['student_id'], 
+                $application_id, 
+                $app_data['scholarship_title'], 
+                $status
+            );
+            
+            // Send email notification
+            sendNotificationEmail('application_status', [
+                'email' => $app_data['email'],
+                'name' => $app_data['fullname'],
+                'scholarship_title' => $app_data['scholarship_title'],
+                'status' => $status,
+                'application_id' => $application_id
+            ]);
+        } catch (Exception $e) {
+            error_log("Notification error: " . $e->getMessage());
+        }
         
         // Set success message based on action
         if ($status === 'approved') {
@@ -1500,6 +1520,7 @@ $stats = $overall_stats_result->fetch_assoc();
             // Create and submit form
             const form = document.createElement('form');
             form.method = 'POST';
+            form.action = 'manage_applications.php';
             form.style.display = 'none';
             
             const actionInput = document.createElement('input');
@@ -1808,7 +1829,9 @@ $stats = $overall_stats_result->fetch_assoc();
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showToast(`Successfully ${status} ${data.updated_count} application(s)`, 'success');
+                    // Format message based on status
+                    const statusMessage = status === 'approved' ? '🎉 Application Approved!' : '✅ Application Rejected!';
+                    showToast(statusMessage, 'success');
                     // Reload the page to show updated data
                     setTimeout(() => {
                         window.location.reload();

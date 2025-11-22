@@ -4,15 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ScholarSeek</title>
+
+    <!-- SEO -->
+    <meta name="description" content="Scholar Seek — unlocking doors to your future. A scholarship web-app exclusively for Biliran Province State University students, making scholarship searching and applications simple, fast, and accessible.">
+    <meta name="keywords" content="Scholar Seek, BiPSU scholarships, Biliran Province State University, scholarship application, student scholarships, college scholarships">
+    <meta name="robots" content="index, follow">
+    <meta name="google-site-verification" content="google874dfe27dcaafe37" />
+
+    <!-- Fonts & Styles -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6usKu8zIstOWilQLyUIDMrcqnznj5d6xglwdUcHP08XSZDqFt5OwUSQGsSYI96A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <!-- App Icons -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon.png">
     <link rel="apple-touch-icon" href="assets/img/icon.png">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https: data:; frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtu.be; style-src 'self' 'unsafe-inline' https: data:; font-src 'self' https: data:; img-src 'self' data: https:; connect-src 'self' https:;">
+
+    <!-- CSP -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self' https: data:;
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:;
+        frame-src 'self' https://www.youtube-nocookie.com https://www.youtube.com https://youtu.be https://www.youtube-nocookie.com/embed/ https://youtube.com/embed/;
+        style-src 'self' 'unsafe-inline' https: data:;
+        font-src 'self' https: data:;
+        img-src 'self' data: https:;
+        connect-src 'self' https:;
+        media-src 'self' https:;
+        child-src https://www.youtube-nocookie.com https://www.youtube.com;">
+    
+    <!-- Structured Data (VideoObject) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "VideoObject",
+      "name": "ScholarSeek Intro Video",
+      "description": "An introduction to ScholarSeek web application features and usage.",
+      "thumbnailUrl": "https://img.youtube.com/vi/MKVSU_z6zDo/hqdefault.jpg",
+      "uploadDate": "2025-11-22T08:00:00+00:00",
+      "contentUrl": "https://scholarseek.infinityfreeapp.com/index.html",
+      "embedUrl": "https://www.youtube-nocookie.com/embed/MKVSU_z6zDo"
+    }
+    </script>
+</head>
+
     
     <style>
         /* Inline Navbar Styles */
@@ -56,8 +93,8 @@
         }
 
         .logo-img {
-            height: 32px;
-            width: auto;
+            height: 80px;
+            width: 120px;
             object-fit: contain;
             margin-right: 5px;
         }
@@ -256,6 +293,7 @@
                     Browse Scholarships
                 </a>
             </div>
+            </div>
     </section>
 
     <!-- Features Section -->
@@ -435,7 +473,7 @@
                         <div class="author-avatar">JD</div>
                         <div class="author-info">
                             <h4>James Davis</h4>
-                            <p>Business Student, Stanford</p>
+                            <p>Business Student, BiPSU</p>
                         </div>
                     </div>
                 </div>
@@ -448,26 +486,9 @@
                         <div class="author-avatar">AL</div>
                         <div class="author-info">
                             <h4>Anna Lopez</h4>
-                            <p>Pre-Med Student, UCLA</p>
+                            <p>Pre-Med Student, BiPSU</p>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- User Portals -->
-    <section class="portals">
-        <div class="container">
-            <h2>Get Started With ScholarSeek</h2>
-            <div class="portals-grid">
-                <div class="portal-card">
-                    <div class="portal-icon">
-                        <i class="fas fa-user-graduate"></i>
-                    </div>
-                    <h3>Student Portal</h3>
-                    <p>Find and apply for scholarships tailored to your profile and track your applications.</p>
-                    <a href="login.php" class="btn btn-primary">Student Login</a>
                 </div>
             </div>
         </div>
@@ -494,8 +515,8 @@
         <div class="container">
             <h2>Our Trusted Partners</h2>
             <div class="partners-grid">
-                <div class="partner-logo">UNIVERSITY A</div>
-                <div class="partner-logo">COLLEGE B</div>
+                <div class="partner-logo">CHED</div>
+                <div class="partner-logo">DOST</div>
                 <div class="partner-logo">TECH INSTITUTE</div>
                 <div class="partner-logo">EDU FOUNDATION</div>
                 <div class="partner-logo">CORP SCHOLARS</div>

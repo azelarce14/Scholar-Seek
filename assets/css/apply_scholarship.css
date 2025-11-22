@@ -4,13 +4,13 @@
 
 /* CSS Variables */
 :root {
-    --primary-color: #0f172a;
-    --primary-dark: #0d1420;
-    --secondary-color: #764ba2;
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary-color: #2563eb;
     --success-color: #10b981;
     --warning-color: #f59e0b;
     --danger-color: #ef4444;
-    --info-color: #3b82f6;
+    --info-color: #2563eb;
     --dark-color: #1f2937;
     --light-color: #f8fafc;
     --gray-50: #f9fafb;

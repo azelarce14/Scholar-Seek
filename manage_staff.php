@@ -7,23 +7,8 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || $_SESSION[
     exit();
 }
 
-// Create fresh database connection
-$host = "127.0.0.1";     
-$user = "root";          
-$pass = "";              
-$db   = "scholarseek";   
-$port = 3306;
-
-$conn = new mysqli($host, $user, $pass, $db, $port);
-
-// Check connection
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("Database connection failed. Please check if XAMPP MySQL is running.");
-}
-
-// Set charset
-$conn->set_charset("utf8mb4");
+// Use centralized database connection
+require_once 'db_connect.php';
 
 // Initialize messages
 $success_message = '';
@@ -51,9 +36,24 @@ if (isset($_GET['delete'])) {
 
 // Handle add/edit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $fullname = trim($_POST['fullname']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
+    // Validate and sanitize inputs
+    $fullname = isset($_POST['fullname']) ? trim($_POST['fullname']) : '';
+    $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+    $password = isset($_POST['password']) ? trim($_POST['password']) : '';
+    
+    // Validate required fields
+    if (empty($fullname) || empty($email)) {
+        $error_message = 'Please fill in all required fields (Name and Email).';
+        header("Location: manage_staff.php");
+        exit();
+    }
+    
+    // Validate email format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error_message = 'Please enter a valid email address.';
+        header("Location: manage_staff.php");
+        exit();
+    }
 
     if (isset($_POST['id']) && !empty($_POST['id'])) {
         // Edit existing staff
@@ -198,9 +198,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     if ($stmt->execute()) {
                         $success_message = "Staff member created successfully! They can now login with email: <strong>$email</strong>";
                     } else {
-                        $error_message = "Error creating staff member.";
+                        $error_msg = $stmt->error;
+                        error_log("Add staff error: " . $error_msg);
+                        error_log("Staff data - Name: $fullname, Email: $email");
+                        $error_message = "Error creating staff member: " . htmlspecialchars($error_msg);
                     }
                     $stmt->close();
+                } else {
+                    $error_msg = $conn->error;
+                    error_log("Prepare error: " . $error_msg);
+                    $error_message = "Database error: " . htmlspecialchars($error_msg);
                 }
             }
         }

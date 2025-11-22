@@ -365,7 +365,7 @@ foreach ($notifications as $notification) {
                             <div class="scholarship-body">
                                 <p class="description"><?php echo htmlspecialchars(substr($scholarship['description'], 0, 150) . '...'); ?></p>
                                 <div class="scholarship-details">
-                                    <div class="detail"><i class="fas fa-money-bill-wave"></i> <span>$<?php echo number_format($scholarship['amount']); ?></span></div>
+                                    <div class="detail"><i class="fas fa-money-bill-wave"></i> <span>₱<?php echo number_format($scholarship['amount']); ?></span></div>
                                     <div class="detail"><i class="fas fa-clock"></i> <span><?php echo date('M d, Y', strtotime($scholarship['deadline'])); ?></span></div>
                                 </div>
                             </div>

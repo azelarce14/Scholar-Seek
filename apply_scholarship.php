@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'db_connect.php';
+include 'includes/seo_helper.php';
 
 // Only allow students
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'student') {
@@ -64,17 +65,29 @@ $additional_documents = json_decode($scholarship['required_documents'] ?? '[]', 
 
 // Combine core required documents with additional ones, removing duplicates
 $required_documents = array_unique(array_merge($core_required_documents, $additional_documents));
+
+// Prepare SEO metadata for this scholarship
+$scholarshipTitle = htmlspecialchars($scholarship['title']);
+$scholarshipDescription = htmlspecialchars(substr($scholarship['description'], 0, 160));
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScholarSeek</title>
+    <?php outputSEOMetaTags('apply', [
+        'title' => 'Apply for ' . $scholarshipTitle . ' - ScholarSeek',
+        'description' => 'Apply for the ' . $scholarshipTitle . ' scholarship at Biliran Province State University. Amount: ₱' . number_format($scholarship['amount']) . '. Deadline: ' . date('F d, Y', strtotime($scholarship['deadline'])),
+        'keywords' => 'scholarship application, ' . $scholarshipTitle . ', BiPSU, student funding, apply now',
+        'og_title' => 'Apply for ' . $scholarshipTitle,
+        'og_description' => $scholarshipDescription
+    ]); ?>
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon.png">
     <link rel="apple-touch-icon" href="assets/img/icon.png">
     <link rel="stylesheet" href="assets/css/apply_scholarship.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <?php echo SEOHelper::generateStructuredData('WebPage', [
+        'title' => 'Apply for ' . $scholarshipTitle,
+        'description' => 'Scholarship application form for ' . $scholarshipTitle
+    ]); ?>
 </head>
 <body>
     <!-- Header -->

@@ -2,6 +2,20 @@
 // Start secure session
 session_start();
 
+// Check if logout parameter is present - clear session
+if (isset($_GET['logout'])) {
+    $_SESSION = array();
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+    session_destroy();
+    session_start(); // Restart session for fresh login
+}
+
 // Regenerate session ID to prevent session fixation
 if (!isset($_SESSION['initiated'])) {
     session_regenerate_id(true);
@@ -9,6 +23,7 @@ if (!isset($_SESSION['initiated'])) {
 }
 
 require_once 'db_connect.php';
+require_once 'includes/seo_helper.php';
 
 // Process login form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -187,26 +202,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Redirect if already authenticated
-if (isset($_SESSION['user_id']) && isset($_SESSION['user_type'])) {
-    switch ($_SESSION['user_type']) {
-        case 'admin':
-            header('Location: admin_dashboard.php');
-            break;
-        case 'staff':
-            header('Location: staff_dashboard.php');
-            break;
-        case 'student':
-            header('Location: student_dashboard.php');
-            break;
-        default:
-            header('Location: index.html');
+// Redirect if already authenticated (only if user_id exists AND user_type is valid)
+// But allow access if logout parameter is present
+if (!isset($_GET['logout']) && isset($_SESSION['user_id']) && isset($_SESSION['user_type']) && !empty($_SESSION['user_type'])) {
+    // Additional validation: ensure user_id is numeric and user_type is one of the valid types
+    if (is_numeric($_SESSION['user_id']) && in_array($_SESSION['user_type'], ['admin', 'staff', 'student'])) {
+        switch ($_SESSION['user_type']) {
+            case 'admin':
+                header('Location: admin_dashboard.php');
+                break;
+            case 'staff':
+                header('Location: staff_dashboard.php');
+                break;
+            case 'student':
+                header('Location: student_dashboard.php');
+                break;
+        }
+        exit();
+    } else {
+        // Invalid session data - clear it and show login form
+        $_SESSION = array();
+        session_destroy();
+        session_start();
     }
-    exit();
 }
 
 $error = isset($_SESSION['login_error']) ? $_SESSION['login_error'] : '';
 $timeout = isset($_GET['timeout']) ? true : false;
+$success_message = '';
 
 if (isset($_SESSION['login_error'])) {
     unset($_SESSION['login_error']);
@@ -215,17 +238,23 @@ if (isset($_SESSION['login_error'])) {
 if ($timeout) {
     $error = 'Your session has expired. Please login again.';
 }
+
+if (isset($_GET['logout'])) {
+    $success_message = 'You have been successfully logged out.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScholarSeek - Login</title>
+    <?php outputSEOMetaTags('login'); ?>
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon.png">
     <link rel="apple-touch-icon" href="assets/img/icon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <?php echo SEOHelper::generateStructuredData('WebPage', [
+        'title' => 'Login to ScholarSeek',
+        'description' => 'Access your scholarship applications and manage your academic journey'
+    ]); ?>
 </head>
 <body>
     <div class="login-wrapper">
@@ -239,6 +268,14 @@ if ($timeout) {
             <div class="info-section">
                 <p class="info-text">Access your scholarship applications and manage your academic journey with ease.</p>
             </div>
+
+            <!-- Success Message -->
+            <?php if ($success_message): ?>
+                <div class="success-message" style="background: #d4edda; border-left: 4px solid #28a745; color: #155724; padding: 12px 15px; border-radius: 6px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-check-circle"></i>
+                    <?php echo htmlspecialchars($success_message); ?>
+                </div>
+            <?php endif; ?>
 
             <!-- Error Message -->
             <?php if ($error): ?>

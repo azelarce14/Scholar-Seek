@@ -3,20 +3,27 @@
  * Secure Database Connection for ScholarSeek
  */
 
-// Database configuration
-// Local XAMPP Development Database
-$host = "127.0.0.1";     
-$user = "root";          
-$pass = "";              
-$db   = "scholarseek";   
-$port = 3306;
+// Database configuration - Auto-detect environment
+// Check if running on InfinityFree or local XAMPP
+$is_production = (strpos($_SERVER['HTTP_HOST'] ?? '', 'infinityfree') !== false || 
+                  strpos($_SERVER['HTTP_HOST'] ?? '', '.000webhostapp.com') !== false ||
+                  strpos($_SERVER['HTTP_HOST'] ?? '', 'netlify') !== false);
 
-// Uncomment below for InfinityFree Production Database
-// $host = "sql100.infinityfree.com";     
-// $user = "if0_40468565";          
-// $pass = "mFSh9ALReEiE";              
-// $db   = "if0_40468565_scholarseek_db";   
-// $port = 3306;
+if ($is_production) {
+    // InfinityFree Production Database
+    $host = "sql100.infinityfree.com";     
+    $user = "if0_40468565";          
+    $pass = "mFSh9ALReEiE";              
+    $db   = "if0_40468565_scholarseek_db";   
+    $port = 3306;
+} else {
+    // Local XAMPP Development Database
+    $host = "127.0.0.1";     
+    $user = "root";          
+    $pass = "";              
+    $db   = "scholarseek";   
+    $port = 3306;
+}
 
 // Create connection with error handling
 $conn = mysqli_connect($host, $user, $pass, $db, $port);

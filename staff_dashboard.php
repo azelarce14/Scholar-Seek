@@ -260,12 +260,14 @@ try {
         overlay.className = 'sidebar-overlay';
         document.body.appendChild(overlay);
 
-        // Toggle mobile menu
-        mobileMenuToggle.addEventListener('click', function() {
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
-            document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
-        });
+        // Toggle mobile menu - only if element exists
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+        }
 
         // Close menu when clicking overlay
         overlay.addEventListener('click', function() {
@@ -290,21 +292,25 @@ try {
         const profileButton = document.getElementById('profileButton');
         const profileDropdown = document.getElementById('profileDropdown');
 
-        // Toggle profile dropdown
-        profileButton.addEventListener('click', function(e) {
-            e.stopPropagation();
-            profileDropdown.classList.toggle('show');
-        });
+        // Toggle profile dropdown - only if elements exist
+        if (profileButton && profileDropdown) {
+            profileButton.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+        }
 
         // Close dropdowns when clicking outside
-        document.addEventListener('click', function() {
-            profileDropdown.classList.remove('show');
-        });
+        if (profileDropdown) {
+            document.addEventListener('click', function() {
+                profileDropdown.classList.remove('show');
+            });
 
-        // Prevent dropdowns from closing when clicking inside them
-        profileDropdown.addEventListener('click', function(e) {
-            e.stopPropagation();
-        });
+            // Prevent dropdowns from closing when clicking inside them
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
 
         // Handle window resize
         window.addEventListener('resize', function() {
@@ -402,15 +408,19 @@ try {
                 window.logoutModal = new LogoutModal();
             }
         }
+        
+        // Define confirmLogout function first
+        window.confirmLogout = function() {
+            if (!window.logoutModal) initLogoutModal();
+            if (window.logoutModal) window.logoutModal.show();
+        };
+        
+        // Initialize logout modal when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initLogoutModal);
         } else {
             initLogoutModal();
         }
-        window.confirmLogout = function() {
-            if (!window.logoutModal) initLogoutModal();
-            if (window.logoutModal) window.logoutModal.show();
-        };
     </script>
 </body>
 </html>

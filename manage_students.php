@@ -4,23 +4,8 @@ session_start();
 // Include academic structure configuration
 require_once 'config/academic_structure.php';
 
-// Create fresh database connection
-$host = "127.0.0.1";     
-$user = "root";          
-$pass = "";              
-$db   = "scholarseek";   
-$port = 3306;
-
-$conn = new mysqli($host, $user, $pass, $db, $port);
-
-// Check connection
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    die("Database connection failed. Please check if XAMPP MySQL is running.");
-}
-
-// Set charset
-$conn->set_charset("utf8mb4");
+// Use centralized database connection
+require_once 'db_connect.php';
 
 // Handle AJAX requests for student details
 if (isset($_GET['action']) && $_GET['action'] === 'get_student_details') {

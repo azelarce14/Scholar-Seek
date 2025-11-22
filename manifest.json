@@ -20,5 +20,13 @@
       "type": "image/png",
       "purpose": "any"
     }
+  ],
+  "categories": ["education", "productivity"],
+  "screenshots": [
+    {
+      "src": "assets/img/icon.png",
+      "sizes": "540x720",
+      "type": "image/png"
+    }
   ]
 }

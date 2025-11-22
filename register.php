@@ -33,18 +33,44 @@
  */
 
 session_start();
-require_once 'db_connect.php';
-require_once 'notification_system.php';
-require_once 'config/academic_structure.php';
-// email_system.php functionality is now integrated into db_connect.php
+
+// Suppress errors to prevent 500 errors from being exposed
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+
+// Load required files with error handling
+try {
+    require_once 'db_connect.php';
+    require_once 'includes/seo_helper.php';
+} catch (Throwable $e) {
+    error_log("Failed to load db_connect.php: " . $e->getMessage());
+    http_response_code(500);
+    die("Database connection error. Please try again later.");
+}
+
+try {
+    require_once 'notification_system.php';
+} catch (Throwable $e) {
+    error_log("Failed to load notification_system.php: " . $e->getMessage());
+    // Don't die - notifications are optional
+}
+
+try {
+    require_once 'config/academic_structure.php';
+} catch (Throwable $e) {
+    error_log("Failed to load academic_structure.php: " . $e->getMessage());
+    http_response_code(500);
+    die("Configuration error. Please try again later.");
+}
 
 // DEBUG: Log all registration attempts
 $debug_log = date('Y-m-d H:i:s') . " - Registration attempt started for email: " . ($_POST['email'] ?? 'none') . "\n";
 $logs_dir = __DIR__ . '/logs';
 if (!is_dir($logs_dir)) {
-    mkdir($logs_dir, 0755, true);
+    @mkdir($logs_dir, 0755, true);
 }
-file_put_contents($logs_dir . '/debug.log', $debug_log, FILE_APPEND | LOCK_EX);
+@file_put_contents($logs_dir . '/debug.log', $debug_log, FILE_APPEND | LOCK_EX);
 
 // Check if form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -137,7 +163,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['error_message'] = "This email address is already registered. Please use a different email or <a href='login.php' style='color: #0A06D3; text-decoration: underline;'>login here</a> if you already have an account.";
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     } else {
@@ -171,7 +196,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['error_message'] = "A student with this exact name is already registered. If this is you, please <a href='login.php' style='color: #0A06D3; text-decoration: underline;'>login here</a>. Otherwise, contact support if you believe this is an error.";
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     }
@@ -191,7 +215,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['error_message'] = "This email is already registered in the system. Please use a different email.";
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     }
@@ -210,7 +233,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['error_message'] = "This email is already registered in the system. Please use a different email.";
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     }
@@ -229,7 +251,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $_SESSION['error_message'] = "This student number is already registered. Please check your student number or contact support.";
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     }
@@ -250,6 +271,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ";
         $stmt = mysqli_prepare($conn, $insert_query);
+        if (!$stmt) {
+            mysqli_rollback($conn);
+            $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+            header("Location: register.php");
+            exit();
+        }
         mysqli_stmt_bind_param($stmt, "ssssssss", $email, $hashed_password, $email, $fullname, $student_number, $program, $department, $year_level);
     } else {
         // Username column removed - insert without it
@@ -258,6 +285,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES (?, ?, ?, ?, ?, ?, ?)
         ";
         $stmt = mysqli_prepare($conn, $insert_query);
+        if (!$stmt) {
+            mysqli_rollback($conn);
+            $_SESSION['error_message'] = "Database error: " . mysqli_error($conn);
+            header("Location: register.php");
+            exit();
+        }
         mysqli_stmt_bind_param($stmt, "sssssss", $hashed_password, $email, $fullname, $student_number, $program, $department, $year_level);
     }
 
@@ -269,21 +302,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         // Log successful registration for security monitoring
         $log_entry = date('Y-m-d H:i:s') . " - New student registration: " . $email . " (ID: " . $student_id . ") from IP: " . ($_SERVER['REMOTE_ADDR'] ?? 'unknown') . "\n";
-        file_put_contents(__DIR__ . '/logs/registrations.log', $log_entry, FILE_APPEND | LOCK_EX);
+        @file_put_contents(__DIR__ . '/logs/registrations.log', $log_entry, FILE_APPEND | LOCK_EX);
         
         // DEBUG: Log successful registration
         $debug_log = date('Y-m-d H:i:s') . " - REGISTRATION SUCCESSFUL: " . $email . " (ID: " . $student_id . ")\n";
-        file_put_contents(__DIR__ . '/logs/debug.log', $debug_log, FILE_APPEND | LOCK_EX);
+        @file_put_contents(__DIR__ . '/logs/debug.log', $debug_log, FILE_APPEND | LOCK_EX);
         
-        // Create welcome notification
-        $notificationSystem = new NotificationSystem($conn);
-        $notificationSystem->notifyWelcome($student_id, $fullname);
+        // Create welcome notification (optional - won't block registration if it fails)
+        try {
+            if (class_exists('NotificationSystem')) {
+                $notificationSystem = new NotificationSystem($conn);
+                $notificationSystem->notifyWelcome($student_id, $fullname);
+            }
+        } catch (Throwable $e) {
+            // Log notification error but don't block registration
+            error_log("Notification creation failed: " . $e->getMessage());
+        }
         
-        // Send welcome email
-        sendNotificationEmail('welcome', [
-            'email' => $email,
-            'name' => $fullname
-        ]);
+        // Send welcome email (optional - won't block registration if it fails)
+        try {
+            if (function_exists('sendNotificationEmail')) {
+                sendNotificationEmail('welcome', [
+                    'email' => $email,
+                    'name' => $fullname
+                ]);
+            }
+        } catch (Throwable $e) {
+            // Log email error but don't block registration
+            error_log("Welcome email failed: " . $e->getMessage());
+        }
         
         $_SESSION['user_type'] = 'student';
         $_SESSION['user_id'] = $student_id;
@@ -293,7 +340,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['success_message'] = "Welcome to ScholarSeek! Your account has been created successfully.";
         
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         
         // Redirect to student dashboard
         header("Location: student_dashboard.php");
@@ -302,10 +348,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Registration failed - rollback transaction
         mysqli_rollback($conn);
         
-        $error = mysqli_error($conn);
-        $_SESSION['error_message'] = "Registration failed: " . $error . ". Please try again or contact support.";
+        $error_msg = mysqli_stmt_error($stmt);
+        $error_code = mysqli_stmt_errno($stmt);
+        
+        // Log detailed error information
+        $error_log = date('Y-m-d H:i:s') . " - REGISTRATION FAILED\n";
+        $error_log .= "Error Code: " . $error_code . "\n";
+        $error_log .= "Error Message: " . $error_msg . "\n";
+        $error_log .= "Email: " . $email . "\n";
+        $error_log .= "Full Name: " . $fullname . "\n";
+        $error_log .= "Student Number: " . $student_number . "\n";
+        $error_log .= "Department: " . $department . "\n";
+        $error_log .= "Program: " . $program . "\n";
+        $error_log .= "Year Level: " . $year_level . "\n";
+        $error_log .= "---\n";
+        @file_put_contents(__DIR__ . '/logs/registration_errors.log', $error_log, FILE_APPEND | LOCK_EX);
+        
+        // User-friendly error message
+        if (strpos($error_msg, 'Duplicate entry') !== false) {
+            $_SESSION['error_message'] = "This email or student number is already registered. Please use different information or contact support.";
+        } else if (strpos($error_msg, 'Unknown column') !== false) {
+            $_SESSION['error_message'] = "Database configuration error. Please contact the administrator.";
+        } else {
+            $_SESSION['error_message'] = "Registration failed. Please try again or contact support.";
+        }
+        
         mysqli_stmt_close($stmt);
-        mysqli_close($conn);
         header("Location: register.php");
         exit();
     }
@@ -314,12 +382,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ScholarSeek</title>
+    <?php outputSEOMetaTags('register'); ?>
     <link rel="stylesheet" href="assets/css/register.css">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon.png">
     <link rel="apple-touch-icon" href="assets/img/icon.png">
+    <?php echo SEOHelper::generateStructuredData('WebPage', [
+        'title' => 'Register for ScholarSeek',
+        'description' => 'Create your free account to discover and apply for scholarships'
+    ]); ?>
     <style>
         .alert {
             padding: 1rem 1.25rem;
